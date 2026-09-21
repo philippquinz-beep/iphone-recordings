@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Diktat</title>
+<meta name="description" content="Diktiergerät – Aufnahmen bleiben lokal auf dem Gerät.">
+<meta name="theme-color" content="#16181d">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Diktat">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<!-- ============ Liste ============ -->
+<section id="screen-list" class="screen is-active">
+  <header class="topbar">
+    <h1 class="topbar__title">Diktate</h1>
+    <button id="btn-new" class="btn btn--accent" type="button">+ Neu</button>
+  </header>
+
+  <div class="list-wrap">
+    <ul id="list" class="list"></ul>
+    <p id="list-empty" class="empty" hidden>
+      Noch keine Aufnahme.<br>
+      <span class="empty__sub">Mit „+ Neu“ das erste Diktat anlegen.</span>
+    </p>
+  </div>
+
+  <footer class="list-foot">
+    <span id="storage-info" class="storage-info"></span>
+  </footer>
+</section>
+
+<!-- ============ Diktiergerät ============ -->
+<section id="screen-rec" class="screen">
+  <header class="topbar">
+    <button id="btn-back" class="btn btn--icon" type="button" aria-label="Zurück zur Liste">‹</button>
+    <button id="btn-name" class="topbar__name" type="button" title="Tippen zum Umbenennen">Diktat</button>
+    <button id="btn-export" class="btn btn--icon" type="button" aria-label="Als WAV exportieren" title="Als WAV exportieren">↧</button>
+  </header>
+
+  <!-- Anzeige -->
+  <div class="display">
+    <div class="display__row">
+      <span id="state-badge" class="badge badge--stop">
+        <span class="badge__dot"></span><span id="state-text">Stopp</span>
+      </span>
+      <span id="overwrite-flag" class="owflag" hidden>überschreiben</span>
+    </div>
+
+    <div class="clock">
+      <span class="clock__cur"><span id="t-cur-main">00:00</span><small id="t-cur-frac">.0</small></span>
+      <span class="clock__sep">/</span>
+      <span id="t-total" class="clock__total">00:00</span>
+    </div>
+
+    <div id="bar" class="bar" role="slider" tabindex="0"
+         aria-label="Position im Diktat" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+      <div id="bar-fill" class="bar__fill"></div>
+      <div id="bar-head" class="bar__head"></div>
+    </div>
+
+    <div class="display__row display__row--foot">
+      <span id="hint" class="hint">Regler auf Aufnehmen schieben</span>
+    </div>
+  </div>
+
+  <!-- Schieberegler -->
+  <div class="slider" id="slider">
+    <div class="slider__labels">
+      <div class="lab" data-i="0">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/></svg>
+        <span>Aufnehmen</span>
+      </div>
+      <div class="lab" data-i="1">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>
+        <span>Stopp</span>
+      </div>
+      <div class="lab" data-i="2">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5 19 12 8.5 18.5Z"/></svg>
+        <span>Abspielen</span>
+      </div>
+      <div class="lab" data-i="3">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5 6.5 3.5 12 11.5 17.5Z"/><path d="M20.5 6.5 12.5 12 20.5 17.5Z"/></svg>
+        <span>Zurückspulen<em>halten</em></span>
+      </div>
+    </div>
+
+    <div class="slider__track" id="track" tabindex="0" role="slider"
+         aria-label="Betriebsartenschalter" aria-valuemin="0" aria-valuemax="3" aria-valuenow="1"
+         aria-valuetext="Stopp">
+      <div class="slider__rail"></div>
+      <div class="slider__notches">
+        <i style="--f:.125"></i><i style="--f:.375"></i><i style="--f:.625"></i><i style="--f:.875"></i>
+      </div>
+      <div class="slider__knob" id="knob">
+        <span class="knob__grip"></span>
+        <span class="knob__grip"></span>
+        <span class="knob__grip"></span>
+      </div>
+    </div>
+  </div>
+
+  <p class="kbdhint">Tastatur: ↑ ↓ wechseln · Leertaste Abspielen/Stopp · ← halten zum Zurückspulen</p>
+</section>
+
+<!-- ============ Overlay ============ -->
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet__box" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <h2 id="sheet-title" class="sheet__title"></h2>
+    <p id="sheet-text" class="sheet__text"></p>
+    <input id="sheet-input" class="sheet__input" type="text" hidden>
+    <div class="sheet__btns">
+      <button id="sheet-cancel" class="btn" type="button">Abbrechen</button>
+      <button id="sheet-ok" class="btn btn--accent" type="button">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
