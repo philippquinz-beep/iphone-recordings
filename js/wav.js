@@ -40,7 +40,9 @@ export async function exportWav(blob, fileName) {
 
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], title: fileName });
+      // Nur die Datei teilen: ein zusätzlicher title wäre für iOS ein eigenes
+      // Element und würde beim Sichern als Textdatei danebenliegen.
+      await navigator.share({ files: [file] });
       return 'shared';
     } catch (err) {
       if (err && err.name === 'AbortError') return 'cancelled';
